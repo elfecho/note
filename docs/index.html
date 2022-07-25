@@ -7,6 +7,8 @@
   <meta name="description" content="Description">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
   <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css">
+  <link rel="stylesheet" href="//cdn.bootcss.com/gitalk/1.5.0/gitalk.min.css">
+  <script src="//cdn.bootcss.com/gitalk/1.5.0/gitalk.min.js"></script>
 </head>
 <body>
   <!-- <nav>
@@ -16,6 +18,15 @@
   </nav> -->
   <div id="app"></div>
   <script>
+    var gitalk = new Gitalk({
+      clientID: 'a6b1e0cbb655fe542736',
+      clientSecret: 'f6a512df86a69c3d7e16de6ece5bfc16fa6a996a',
+      repo: 'note',
+      owner: 'elfecho',
+      admin: ['elfecho'],
+      title: location.href,
+      distractionFreeMode: false,
+    });
     window.$docsify = {
       name: 'Note in learning',
       loadSidebar: true,
@@ -27,7 +38,24 @@
       alias: { // 定义路由别名，可以更自由的定义路由规则。 支持正则
         '/.*/_sidebar.md': '/_sidebar.md',//防止意外回退
         '/.*/_navbar.md': '/_navbar.md'
-      }
+      },
+      plugins: [
+        function (hook, vm) {
+          hook.mounted(function() {
+            var div = Docsify.dom.create('div')
+            div.id = 'gitalk-container'
+            var main = Docsify.dom.getNode('#main')
+            div.style = `width: ${main.clientWidth}px; margin: 0 auto 20px;`
+            Docsify.dom.appendTo(Docsify.dom.find('.content'), div)
+          })
+
+          hook.doneEach(function() {
+            var el = document.getElementById('gitalk-container')
+            while(el.hasChildNodes()) el.removeChild(el.firstChild)
+            gitalk.render('gitalk-container')
+          })
+        }
+      ]
     }
   </script>
   <!-- Docsify v4 -->
